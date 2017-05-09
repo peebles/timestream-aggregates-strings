@@ -7,7 +7,7 @@ Aggregation functions for objectMode streams. Contains a set of stream Transform
 
 This is most useful for timeseries data as the chunked aggregation function is designed to slice data by time.
 
-The interval slicing function is [floordate](http://npm.im/floordate).
+The interval slicing function is [moment-timezone](https://momentjs.com/timezone/).
 
 ```javascript
 var spigot = require("stream-spigot")
@@ -48,7 +48,7 @@ series()
 */
 
 series()
-  .pipe(agg.mean("time", "hour"))
+  .pipe(agg.mean("time", "hour", null, "America/Los_Angeles"))
   .pipe(concat(console.log))
 
 /*
@@ -76,67 +76,67 @@ All aggregates accept an interval slice that it will partition the streams into.
 
 If no interval is specified, the operation is applied over every record resulting in a single record.
 
-`sum(seqKey [,interval])`
+`sum(seqKey [,interval], [options], [timezone])`
 ---
 
 Sums all numeric values during each interval by key. Uses the [stats-lite](http://npm.im/stats-lite) library.
 
-`mean(seqKey [,interval])`
+`mean(seqKey [,interval], [options], [timezone])`
 ---
 
 Averages (mean) all numeric values during each interval by key. Uses the [stats-lite](http://npm.im/stats-lite) library.
 
-`mode(seqKey [,interval])`
+`mode(seqKey [,interval], [options], [timezone])`
 ---
 
 Averages (mode) all numeric values during each interval by key. Uses the [stats-lite](http://npm.im/stats-lite) library.
 
-`median(seqKey [,interval])`
+`median(seqKey [,interval], [options], [timezone])`
 ---
 
 Averages (median) all numeric values during each interval by key. Uses the [stats-lite](http://npm.im/stats-lite) library.
 
-`variance(seqKey [,interval])`
+`variance(seqKey [,interval], [options], [timezone])`
 ---
 
 Calculates the variance of all numeric values during each interval by key. Uses the [stats-lite](http://npm.im/stats-lite) library.
 
-`stdev(seqKey [,interval])`
+`stdev(seqKey [,interval], [options], [timezone])`
 ---
 
 Calculates the standard deviation of all numeric values during each interval by key. Uses the [stats-lite](http://npm.im/stats-lite) library.
 
-`percentile(seqKey [,interval], percent)`
+`percentile(seqKey [,interval], percent, [timezone])`
 ---
 
 Calculates the specified percentile of all numeric values during each interval by key. Uses the [stats-lite](http://npm.im/stats-lite) library.
 
-`min(seqKey [,interval])`
+`min(seqKey [,interval], [options], [timezone])`
 ---
 
 Returns records where each key is the minimum value (Math.min) in each interval by key.
 
-`max(seqKey [,interval])`
+`max(seqKey [,interval], [options], [timezone])`
 ---
 
 Returns records where each key is the maximum value (Math.max) in each interval by key.
 
-`count(seqKey [,interval])`
+`count(seqKey [,interval], [options], [timezone])`
 ---
 
 Returns records where each key is the number of values in each interval by key.
 
-`first(seqKey [,interval])`
+`first(seqKey [,interval], [options], [timezone])`
 ---
 
 Returns records where each key is the first (chronologically) value in each interval by key.
 
-`last(seqKey [,interval])`
+`last(seqKey [,interval], [options], [timezone])`
 ---
 
 Returns records where each key is the last (chronologically) value in each interval by key.
 
-`sample(seqKey [,interval])`
+`sample(seqKey [,interval], [options], [timezone])`
 ---
 
 Returns records where each key a random member of the records in each interval by key.
