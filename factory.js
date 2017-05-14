@@ -41,7 +41,7 @@ function factory(fn) {
 function agg(seqKey, segment, tz) {
   function slot(record, encoding, callback) {
     if (this._windowSet == null) this._windowSet = []
-    var floored = moment( record[seqKey] ).tz( tz || 'UTC' ).startOf( segment ).valueOf()
+    var floored = ( segment == Number.MAX_VALUE ? 0 : moment( record[seqKey] ).tz( tz || 'UTC' ).startOf( segment ).valueOf() )
     if (this._windowKey != null && floored != this._windowKey) {
       var aggregate = {set: this._windowSet.splice(0)}
       aggregate[seqKey] = this._windowKey
