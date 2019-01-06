@@ -1,12 +1,36 @@
 module.exports = factory
 
-var map = require("through2-map")
-var splice = require("stream-splice")
-var pivot = require("array-pivot")
-var isNumber = require("isnumber")
+var map = require("through2-map");
+var splice = require("stream-splice");
+var pivot = require("array-pivot");
+var isNumber = require("isnumber");
 
-var through2 = require("through2")
-var moment = require("moment-timezone")
+var through2 = require("through2");
+var moment = require("moment-timezone");
+
+var re = new RegExp(/^(\d+)(.)/);
+moment.fn.floor = function (interval) {
+  if ( re.test(interval) ) {
+    var n = Number(interval.match(re)[1]);
+    var sm = interval.match(re)[2];
+    if ( sm === 'm' ) {
+      var intervals = Math.floor(this.minutes() / n);
+      this.minutes(intervals * n);
+      this.seconds(0);
+      this.milliseconds(0);
+      return this;
+    }
+    else if ( sm === 's' ) {
+      var intervals = Math.floor(this.seconds() / n);
+      this.seconds(intervals * n);
+      this.milliseconds(0);
+      return this;
+    }
+  }
+  else {
+    return this.startOf(interval);
+  }
+}
 
 function factory(fn) {
   function mapAgg(seqKey, segment, option, tz) {
@@ -41,7 +65,7 @@ function factory(fn) {
 function agg(seqKey, segment, tz) {
   function slot(record, encoding, callback) {
     if (this._windowSet == null) this._windowSet = []
-    var floored = ( segment == Number.MAX_VALUE ? 0 : moment( record[seqKey] ).tz( tz || 'UTC' ).startOf( segment ).valueOf() )
+    var floored = ( segment === Number.MAX_VALUE ? 0 : moment( record[seqKey] ).tz( tz || 'UTC' ).floor( segment ).valueOf() )
     if (this._windowKey != null && floored != this._windowKey) {
       var aggregate = {set: this._windowSet.splice(0)}
       aggregate[seqKey] = this._windowKey
